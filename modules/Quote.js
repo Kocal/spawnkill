@@ -229,6 +229,10 @@ SK.moduleConstructors.Quote.prototype.addToResponse = function(text) {
 /* Crée un bloc de citation à partir du Message passées en paramètre */
 SK.moduleConstructors.Quote.prototype.createCitationBlock = function(message) {
 
+    // Pour corriger le bug #52 
+    // C'est dégueulasse, faudrait trouver un meilleur moyen pour le corriger.
+    var regex = /(http:\/\/(?:(?:dl\.spixel\.fr\/get-spawnkill)|(?:www\.spawnkill\.fr))\/?#download-box)(.*Faire un don de 2€ à Spixel_) */;
+
     var lines = message.text.split("\n");
 
     switch(this.getSetting("quoteType")) {
@@ -279,6 +283,11 @@ SK.moduleConstructors.Quote.prototype.createCitationBlock = function(message) {
 
     //On n'autorise pas les sauts de ligne consécutifs dans les citations
     var quote = lines.join("\n");
+
+    // #52
+    var matches = quote.match(regex);
+
+    quote = quote.replace(matches[0], matches[1] + " ");
 
     return quote;
 };
